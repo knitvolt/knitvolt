@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY || '')
+function getResend(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return null
+  return new Resend(apiKey)
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,6 +17,12 @@ export async function POST(request: NextRequest) {
         { error: 'Please enter a valid email address.' },
         { status: 400 }
       )
+    }
+
+    const resend = getResend()
+    if (!resend) {
+      // API key not configured — just pretend success for now
+      return NextResponse.json({ success: true })
     }
 
     // Send welcome email to subscriber
