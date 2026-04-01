@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email to subscriber
     const { data, error } = await resend.emails.send({
-      from: 'KnitVolt <onboarding@resend.dev>',
+      from: 'KnitVolt <hello@knitvolt.com>',
       to: [email],
       subject: 'You\'re on the list! ⚡ Welcome to KnitVolt',
       html: `
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     // Also send notification to admin (you) so you know who subscribed
     await resend.emails.send({
-      from: 'KnitVolt <onboarding@resend.dev>',
+      from: 'KnitVolt <hello@knitvolt.com>',
       to: ['jianwen05151@163.com'],
       subject: '⚡ New KnitVolt Subscriber',
       html: `
