@@ -82,6 +82,7 @@ function FeatureItem({ icon, text }: { icon: string; text: string }) {
 export default function ComingSoon() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
   // Launch date: June 1, 2026
   const launchDate = new Date('2026-06-01T00:00:00')
 
@@ -98,15 +99,17 @@ export default function ComingSoon() {
       })
       if (!res.ok) {
         const data = await res.json()
-        throw new Error(data.error || 'Something went wrong')
+        setErrorMessage(data.error || 'Something went wrong')
+        throw new Error(data.error)
       }
       setStatus('success')
       setEmail('')
+      setErrorMessage('')
       setTimeout(() => setStatus('idle'), 5000)
     } catch (err) {
       console.error(err)
       setStatus('error')
-      setTimeout(() => setStatus('idle'), 4000)
+      setTimeout(() => { setStatus('idle'); setErrorMessage('') }, 8000)
     }
   }
 
@@ -171,6 +174,7 @@ export default function ComingSoon() {
             ) : status === 'error' ? (
               <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-6 py-4">
                 <p className="text-red-400 font-medium">Something went wrong</p>
+                {errorMessage && <p className="text-red-400/70 text-sm mt-1">{errorMessage}</p>}
                 <p className="text-white/40 text-sm mt-1">Please try again later.</p>
               </div>
             ) : (

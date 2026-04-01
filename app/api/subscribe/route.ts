@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Resend error:', JSON.stringify(error, null, 2))
       return NextResponse.json(
-        { error: error.message || 'Something went wrong. Please try again.' },
+        { error: `[Resend] ${error.name}: ${error.message}` },
         { status: 500 }
       )
     }
