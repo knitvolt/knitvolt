@@ -90,13 +90,24 @@ export default function ComingSoon() {
     if (!email) return
 
     setStatus('loading')
-    // TODO: Replace with real email subscription API (e.g., Mailchimp, ConvertKit, or custom backend)
-    // For now, we just show success
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Something went wrong')
+      }
       setStatus('success')
       setEmail('')
+      setTimeout(() => setStatus('idle'), 5000)
+    } catch (err) {
+      console.error(err)
+      setStatus('error')
       setTimeout(() => setStatus('idle'), 4000)
-    }, 1000)
+    }
   }
 
   return (
@@ -156,6 +167,11 @@ export default function ComingSoon() {
               <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-6 py-4">
                 <p className="text-emerald-400 font-medium">You&apos;re on the list! ⚡</p>
                 <p className="text-white/40 text-sm mt-1">We&apos;ll notify you when we launch.</p>
+              </div>
+            ) : status === 'error' ? (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-6 py-4">
+                <p className="text-red-400 font-medium">Something went wrong</p>
+                <p className="text-white/40 text-sm mt-1">Please try again later.</p>
               </div>
             ) : (
               <>
