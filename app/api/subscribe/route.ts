@@ -50,9 +50,9 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
-      console.error('Resend error:', error)
+      console.error('Resend error:', JSON.stringify(error, null, 2))
       return NextResponse.json(
-        { error: 'Something went wrong. Please try again.' },
+        { error: error.message || 'Something went wrong. Please try again.' },
         { status: 500 }
       )
     }
